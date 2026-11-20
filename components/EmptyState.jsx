@@ -1,5 +1,6 @@
 import { Columns2, Star, FolderOpen } from "lucide-react";
 import { BRAND } from "@/lib/brand";
+import SocialLinks from "./SocialLinks";
 
 const TIPS = [
   { icon: Columns2, title: "Compare", text: "Mande o mesmo prompt para até 4 modelos." },
@@ -27,6 +28,10 @@ export default function EmptyState({ anyConnected }) {
         {BRAND.tagline}
       </p>
       <p className="text-muted mb-10 max-w-md">{BRAND.description}</p>
+
+      <div className="mb-10 w-full flex justify-center">
+        <SocialLinks />
+      </div>
 
       <div className="grid sm:grid-cols-3 gap-3 max-w-2xl w-full">
         {TIPS.map(({ icon: Icon, title, text }) => (

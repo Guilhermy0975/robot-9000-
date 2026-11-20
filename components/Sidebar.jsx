@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import Logo from "./Logo";
 import ConversationList from "./ConversationList";
+import SocialLinks from "./SocialLinks";
 
 function NavItem({ icon: Icon, label, active, onClick, soon, count }) {
   return (
@@ -128,6 +129,7 @@ export default function Sidebar({ open, onClose, store, filter, setFilter, searc
         </div>
 
         <div className="border-t border-line p-3 space-y-0.5">
+          <SocialLinks variant="compact" />
           <NavItem icon={Settings} label="Configurações" soon />
           <div className="flex items-center gap-3 px-3 py-2 text-sm">
             <UserCircle2 size={28} className="text-muted" />
