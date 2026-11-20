@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 
-// Lista de modelos vinda do servidor (sem nenhuma chave de API)
+// Lista de modelos vinda do servidor (sem nenhuma chave de API).
+// Se algum provedor estiver conectado, esconde os que só dariam resposta simulada.
 export function useModels() {
   const [models, setModels] = useState([]);
   const [error, setError] = useState(null);
@@ -9,7 +10,7 @@ export function useModels() {
   useEffect(() => {
     fetch("/api/models")
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-      .then(setModels)
+      .then((list) => setModels(list.some((m) => m.connected) ? list.filter((m) => m.connected) : list))
       .catch(() => setError("Não foi possível carregar os modelos."));
   }, []);
 

@@ -1,4 +1,4 @@
-# Robot 9000 — Módulo 1 (frontend funcional)
+# Robot 9000
 
 Central para conversar com GPT, Claude, Gemini e Llama numa só interface,
 com modo de comparação, histórico salvo, favoritos, pastas e busca.
@@ -107,3 +107,18 @@ O botão de anexo também fica desativado até o Módulo 5.
 O app abre em tela cheia, com o ícone do Robot 9000.
 Atenção: neste módulo o histórico fica salvo no aparelho; ele só sincroniza
 entre dispositivos depois do Módulo 2 (login + banco).
+
+
+## Módulo 2 — contas, banco e limite diário
+
+- Cadastro e login com e-mail e senha (senha com hash bcrypt, sessão em cookie
+  assinado e httpOnly, válido por 30 dias)
+- Conversas e pastas salvas na conta (PostgreSQL + Prisma), com salvamento
+  automático. Histórico antigo do navegador é enviado para a conta no 1º login
+- Limite diário de respostas de IA por pessoa (`DAILY_LIMIT`, padrão 30).
+  Respostas simuladas e respostas com erro não gastam o limite
+- Limite de tentativas de login e de mensagens por minuto
+- Se houver algum provedor conectado, os modelos sem chave somem da lista
+
+Na Vercel: crie o banco em **Storage → Neon**, conecte ao projeto e faça
+**Redeploy**. O build cria as tabelas sozinho (`prisma db push`).

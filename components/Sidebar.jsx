@@ -2,7 +2,7 @@
 import { useState } from "react";
 import {
   Plus, Search, Star, Folder, FolderPlus, MessagesSquare, BookOpen,
-  Settings, BarChart3, UserCircle2, X, Trash2,
+  Settings, BarChart3, UserCircle2, X, Trash2, LogOut,
 } from "lucide-react";
 import Logo from "./Logo";
 import ConversationList from "./ConversationList";
@@ -26,7 +26,7 @@ function NavItem({ icon: Icon, label, active, onClick, soon, count }) {
   );
 }
 
-export default function Sidebar({ open, onClose, store, filter, setFilter, search, setSearch, onNew }) {
+export default function Sidebar({ open, onClose, store, filter, setFilter, search, setSearch, onNew, account }) {
   const [newFolder, setNewFolder] = useState(null);
   const { conversations, folders } = store;
 
@@ -134,9 +134,14 @@ export default function Sidebar({ open, onClose, store, filter, setFilter, searc
           <div className="flex items-center gap-3 px-3 py-2 text-sm">
             <UserCircle2 size={28} className="text-muted" />
             <div className="min-w-0">
-              <p className="font-medium truncate">Convidado</p>
-              <p className="text-xs text-muted truncate">Dados salvos neste navegador</p>
+              <p className="font-medium truncate">{account?.user?.name ?? "…"}</p>
+              <p className="text-xs text-muted truncate">
+                {account?.quota ? `${account.quota.remaining} de ${account.quota.limit} mensagens hoje` : account?.user?.email}
+              </p>
             </div>
+            <button onClick={account?.logout} className="ml-auto text-muted hover:text-brand p-1.5" title="Sair">
+              <LogOut size={17} />
+            </button>
           </div>
         </div>
       </aside>

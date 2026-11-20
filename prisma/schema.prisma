@@ -1,14 +1,10 @@
-// Preparação para o Módulo 2 (PostgreSQL + login).
-// Ainda NÃO é usado: no Módulo 1 os dados ficam no navegador (lib/storage.js).
-// A estrutura espelha o formato salvo localmente para facilitar a migração.
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
 }
 
 model User {
@@ -19,48 +15,39 @@ model User {
   createdAt     DateTime       @default(now())
   conversations Conversation[]
   folders       Folder[]
+  usage         Usage[]
 }
 
 model Folder {
-  id            String         @id @default(cuid())
-  name          String
-  userId        String
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  conversations Conversation[]
+  id     String @id
+  name   String
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
+// As mensagens ficam em "turns" (JSON), no mesmo formato usado pela interface
 model Conversation {
-  id        String   @id @default(cuid())
-  title     String
-  favorite  Boolean  @default(false)
+  id        String   @id
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  favorite  Boolean  @default(false)
   folderId  String?
-  folder    Folder?  @relation(fields: [folderId], references: [id], onDelete: SetNull)
-  turns     Turn[]
+  turns     Json
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 
   @@index([userId, updatedAt])
 }
 
-model Turn {
-  id             String       @id @default(cuid())
-  conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  prompt         String
-  responses      Response[]
-  createdAt      DateTime     @default(now())
-}
+// Quantas respostas de IA cada usuário gerou em cada dia (para o limite diário)
+model Usage {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  day    String
+  count  Int    @default(0)
 
-model Response {
-  id        String  @id @default(cuid())
-  turnId    String
-  turn      Turn    @relation(fields: [turnId], references: [id], onDelete: Cascade)
-  modelId   String
-  model     String?
-  status    String
-  content   String
-  error     String?
-  simulated Boolean @default(false)
+  @@id([userId, day])
 }

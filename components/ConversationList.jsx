@@ -93,7 +93,7 @@ export default function ConversationList({ store, filter, search, onPicked }) {
     <div>
       <p className="text-[11px] font-semibold text-muted tracking-wider px-3 mb-1">{heading}</p>
       {!store.ready ? (
-        <p className="px-3 text-xs text-muted">Carregando…</p>
+        <p className="px-3 text-xs text-muted">Carregando suas conversas…</p>
       ) : items.length === 0 ? (
         <p className="px-3 text-xs text-muted/70">{q ? "Nada encontrado." : "Nenhuma conversa aqui."}</p>
       ) : (

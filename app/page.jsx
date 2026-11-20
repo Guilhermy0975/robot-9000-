@@ -8,6 +8,7 @@ import ChatInput from "@/components/ChatInput";
 import { useConversations } from "@/hooks/useConversations";
 import { useModels } from "@/hooks/useModels";
 import { useTheme } from "@/hooks/useTheme";
+import { useAccount } from "@/hooks/useAccount";
 import { buildHistory } from "@/lib/storage";
 import { BRAND } from "@/lib/brand";
 
@@ -15,6 +16,7 @@ export default function Home() {
   const store = useConversations();
   const { models, error: modelsError } = useModels();
   const { theme, toggle: toggleTheme } = useTheme();
+  const account = useAccount();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filter, setFilter] = useState({ type: "all" });
@@ -23,6 +25,17 @@ export default function Home() {
   const [compare, setCompare] = useState(false);
   const [single, setSingle] = useState("gpt");
   const [selected, setSelected] = useState(["gpt", "claude"]);
+
+  // Se algum modelo escolhido não estiver disponível, troca pelos disponíveis
+  useEffect(() => {
+    if (!models.length) return;
+    const ids = models.map((m) => m.id);
+    if (!ids.includes(single)) setSingle(ids[0]);
+    setSelected((old) => {
+      const kept = old.filter((id) => ids.includes(id));
+      return kept.length >= 2 ? kept : ids.slice(0, 2);
+    });
+  }, [models]);
 
   // Sidebar aberta por padrão no desktop, fechada no celular
   useEffect(() => {
@@ -43,7 +56,9 @@ export default function Home() {
         body: JSON.stringify({ modelId, messages: history }),
       });
       const data = await res.json().catch(() => ({}));
+      if (res.status === 401) { window.location.href = "/login"; return; }
       if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
+      if (data.quota) account.setQuota(data.quota);
       store.updateResponse(convId, turnId, modelId, {
         status: "done", content: data.content, simulated: !!data.simulated, model: data.model ?? null,
       });
@@ -52,12 +67,14 @@ export default function Home() {
         status: "error", error: e instanceof Error ? e.message : "Falha de conexão",
       });
     }
-  }, [store.updateResponse]);
+  }, [store.updateResponse, account.setQuota]);
 
   const targets = compare ? selected : [single];
+  const outOfQuota = account.quota && account.quota.remaining < targets.length && models.some((m) => m.connected);
   const disabledReason =
     !models.length ? null
     : compare && selected.length < 2 ? "Escolha de 2 a 4 modelos"
+    : outOfQuota ? (account.quota.remaining === 0 ? "Limite de hoje atingido" : `Restam ${account.quota.remaining} mensagens`)
     : null;
 
   function send() {
@@ -95,6 +112,7 @@ export default function Home() {
         search={search}
         setSearch={setSearch}
         onNew={newChat}
+        account={account}
       />
 
       <main className="relative z-10 flex-1 flex flex-col min-w-0">
@@ -140,8 +158,10 @@ export default function Home() {
             />
             <p className="text-center text-[10px] uppercase tracking-[0.2em] text-muted mt-2">
               {store.saveError
-                ? "Não foi possível salvar no navegador (armazenamento cheio ou bloqueado)."
-                : `${BRAND.name} // histórico salvo neste navegador`}
+                ? "Erro ao salvar na sua conta. Verifique a internet."
+                : account.quota && models.some((m) => m.connected)
+                  ? `${BRAND.name} // ${account.quota.remaining} de ${account.quota.limit} mensagens hoje`
+                  : `${BRAND.name} // histórico salvo na sua conta`}
             </p>
           </div>
         </footer>
