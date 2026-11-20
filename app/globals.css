@@ -102,3 +102,16 @@ html, body {
 
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Pôster do usuário como textura de fundo, bem escurecido */
+.poster-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: url("/art/poster.jpg") center / cover no-repeat;
+  opacity: 0.16;
+  filter: saturate(1.2) contrast(1.1);
+  mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.5) 60%, transparent 100%);
+}
+[data-theme="light"] .poster-layer { opacity: 0.06; }

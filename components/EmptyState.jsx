@@ -9,27 +9,26 @@ const TIPS = [
 
 export default function EmptyState({ anyConnected }) {
   return (
-    <div className="relative min-h-[60vh] flex flex-col items-center justify-center text-center px-2 animate-fade-up overflow-hidden">
-      {/* Texto gigante de fundo, estilo pôster */}
-      <span
-        aria-hidden
-        className="pointer-events-none select-none absolute inset-x-0 top-1/2 -translate-y-1/2 font-display uppercase text-outline opacity-25 leading-none text-[26vw] md:text-[16vw] whitespace-nowrap"
-      >
-        9000
-      </span>
+    <div className="relative min-h-[60vh] flex flex-col items-center justify-center text-center px-2 animate-fade-up">
+      {/* Arte principal do Robot 9000 */}
+      <div className="relative w-56 h-56 md:w-72 md:h-72 mb-6">
+        <div className="absolute -inset-6 rounded-full bg-brand/30 blur-3xl" aria-hidden />
+        <img
+          src="/art/robot9000.jpg"
+          alt={BRAND.name}
+          className="relative w-full h-full object-cover rounded-2xl ring-1 ring-brand/60 glow"
+        />
+      </div>
 
-      <p className="relative font-display uppercase tracking-[0.35em] text-xs text-brand mb-3">
+      <p className="font-display uppercase tracking-[0.35em] text-xs text-brand mb-3">
         Multi-model // Compare // Control
       </p>
-      <h1 className="relative font-metal text-6xl md:text-8xl leading-none text-brand text-glow animate-flicker mb-4">
-        {BRAND.name}
-      </h1>
-      <p className="relative font-display uppercase text-2xl md:text-3xl tracking-wide mb-2">
+      <p className="font-display uppercase text-2xl md:text-3xl tracking-wide mb-2">
         {BRAND.tagline}
       </p>
-      <p className="relative text-muted mb-10 max-w-md">{BRAND.description}</p>
+      <p className="text-muted mb-10 max-w-md">{BRAND.description}</p>
 
-      <div className="relative grid sm:grid-cols-3 gap-3 max-w-2xl w-full">
+      <div className="grid sm:grid-cols-3 gap-3 max-w-2xl w-full">
         {TIPS.map(({ icon: Icon, title, text }) => (
           <div
             key={title}
@@ -43,7 +42,7 @@ export default function EmptyState({ anyConnected }) {
       </div>
 
       {!anyConnected && (
-        <p className="relative text-[11px] uppercase tracking-widest text-brand/80 mt-8 max-w-md">
+        <p className="text-[11px] uppercase tracking-widest text-brand/80 mt-8 max-w-md">
           Modo simulado — nenhuma IA conectada no servidor
         </p>
       )}

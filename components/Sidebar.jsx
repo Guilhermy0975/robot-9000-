@@ -42,7 +42,7 @@ export default function Sidebar({ open, onClose, store, filter, setFilter, searc
     <>
       {open && <div onClick={onClose} className="md:hidden fixed inset-0 bg-black/60 z-30 animate-fade-up" />}
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-40 w-72 shrink-0 bg-side/95 backdrop-blur scanlines border-r border-line flex flex-col
+        className={`fixed md:relative inset-y-0 left-0 z-40 w-72 shrink-0 bg-side/95 backdrop-blur scanlines border-r border-line flex flex-col
           transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full md:hidden"}`}
       >
         <div className="p-4 pb-3 pt-[max(1rem,env(safe-area-inset-top))] flex items-center justify-between">

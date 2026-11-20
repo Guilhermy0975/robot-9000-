@@ -84,7 +84,8 @@ export default function Home() {
   }
 
   return (
-    <div className="h-dvh flex overflow-hidden bg-poster text-fg">
+    <div className="relative h-dvh flex overflow-hidden bg-poster text-fg">
+      <div className="poster-layer" aria-hidden />
       <Sidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -96,7 +97,7 @@ export default function Home() {
         onNew={newChat}
       />
 
-      <main className="flex-1 flex flex-col min-w-0">
+      <main className="relative z-10 flex-1 flex flex-col min-w-0">
         <TopBar
           title={conv?.title ?? BRAND.name}
           onMenu={() => setSidebarOpen((o) => !o)}
