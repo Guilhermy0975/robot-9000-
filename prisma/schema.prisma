@@ -16,6 +16,7 @@ model User {
   conversations Conversation[]
   folders       Folder[]
   usage         Usage[]
+  keys          ProviderKey[]
 }
 
 model Folder {
@@ -50,4 +51,20 @@ model Usage {
   count  Int    @default(0)
 
   @@id([userId, day])
+}
+
+// Chave de IA de cada usuário (criptografada) + configurações do modelo
+model ProviderKey {
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider    String // "gpt" | "claude" | "gemini" | "llama"
+  keyEnc      String
+  keyHint     String
+  model       String   @default("")
+  temperature Float    @default(0.7)
+  maxTokens   Int      @default(1024)
+  system      String   @default("")
+  updatedAt   DateTime @updatedAt
+
+  @@id([userId, provider])
 }

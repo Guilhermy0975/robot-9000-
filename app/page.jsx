@@ -70,7 +70,8 @@ export default function Home() {
   }, [store.updateResponse, account.setQuota]);
 
   const targets = compare ? selected : [single];
-  const outOfQuota = account.quota && account.quota.remaining < targets.length && models.some((m) => m.connected);
+  const appKeyTargets = targets.filter((id) => models.find((m) => m.id === id)?.source === "server").length;
+  const outOfQuota = account.quota && appKeyTargets > 0 && account.quota.remaining < appKeyTargets;
   const disabledReason =
     !models.length ? null
     : compare && selected.length < 2 ? "Escolha de 2 a 4 modelos"
@@ -159,8 +160,8 @@ export default function Home() {
             <p className="text-center text-[10px] uppercase tracking-[0.2em] text-muted mt-2">
               {store.saveError
                 ? "Erro ao salvar na sua conta. Verifique a internet."
-                : account.quota && models.some((m) => m.connected)
-                  ? `${BRAND.name} // ${account.quota.remaining} de ${account.quota.limit} mensagens hoje`
+                : account.quota && models.some((m) => m.source === "server")
+                  ? `${BRAND.name} // ${account.quota.remaining} de ${account.quota.limit} mensagens grátis hoje`
                   : `${BRAND.name} // histórico salvo na sua conta`}
             </p>
           </div>

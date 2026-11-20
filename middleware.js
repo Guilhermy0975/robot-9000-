@@ -10,4 +10,4 @@ export async function middleware(req) {
 }
 
 // Só as páginas; as rotas /api verificam a sessão por conta própria
-export const config = { matcher: ["/", "/login"] };
+export const config = { matcher: ["/", "/login", "/settings"] };

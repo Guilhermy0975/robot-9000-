@@ -1,4 +1,5 @@
-import { Columns2, Star, FolderOpen } from "lucide-react";
+import Link from "next/link";
+import { Columns2, Star, FolderOpen, KeyRound } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import SocialLinks from "./SocialLinks";
 
@@ -47,9 +48,12 @@ export default function EmptyState({ anyConnected }) {
       </div>
 
       {!anyConnected && (
-        <p className="text-[11px] uppercase tracking-widest text-brand/80 mt-8 max-w-md">
-          Modo simulado — nenhuma IA conectada no servidor
-        </p>
+        <Link
+          href="/settings"
+          className="mt-8 inline-flex items-center gap-2 bg-brand text-white rounded-lg px-5 py-3 font-display uppercase tracking-widest text-sm glow hover:brightness-110"
+        >
+          <KeyRound size={16} /> Conecte sua IA
+        </Link>
       )}
     </div>
   );

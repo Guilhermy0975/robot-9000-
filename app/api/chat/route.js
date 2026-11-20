@@ -1,7 +1,8 @@
-import { generate, getAdapter } from "@/lib/providers";
+import { generate, getAdapter, resolveSource } from "@/lib/providers";
 import { rateLimit } from "@/lib/rateLimit";
 import { fail, getUserId, json, unauthorized } from "@/lib/auth";
 import { consume, refund, getUsage } from "@/lib/usage";
+import { loadUserKey } from "@/lib/userKeys";
 
 export const maxDuration = 60;
 
@@ -10,6 +11,8 @@ const MAX_CHARS = 20_000;
 
 // Gera UMA resposta de UM modelo. No modo comparação o navegador chama
 // esta rota uma vez por modelo, então cada resposta é independente.
+// Ordem da chave: a do próprio usuário → a do app → resposta simulada.
+// Só a chave do app gasta o limite diário.
 export async function POST(req) {
   const userId = await getUserId();
   if (!userId) return unauthorized();
@@ -34,16 +37,19 @@ export async function POST(req) {
   if (messages[messages.length - 1].role !== "user" || !messages[messages.length - 1].content.trim())
     return fail("A última mensagem precisa ser do usuário");
 
-  if (!(await consume(userId))) {
-    return fail("Você usou todas as mensagens de hoje. O limite renova à meia-noite.", 429);
+  const resolved = resolveSource(adapter, await loadUserKey(userId, adapter.id));
+  const usesAppKey = resolved.source === "server";
+
+  if (usesAppKey && !(await consume(userId))) {
+    return fail("Você usou todas as mensagens grátis de hoje. Conecte a sua própria chave em Configurações para continuar.", 429);
   }
 
   try {
-    const result = await generate(adapter, messages.map((m) => ({ role: m.role, content: m.content })));
-    if (result.simulated) await refund(userId); // resposta simulada não gasta o limite
-    return json({ ...result, quota: await getUsage(userId) });
+    const result = await generate(adapter, messages.map((m) => ({ role: m.role, content: m.content })), resolved);
+    return json({ ...result, source: resolved.source, quota: await getUsage(userId) });
   } catch (e) {
-    await refund(userId);
-    return fail(e instanceof Error ? e.message : "Falha ao gerar resposta", 502);
+    if (usesAppKey) await refund(userId);
+    const msg = e instanceof Error ? e.message : "Falha ao gerar resposta";
+    return fail(resolved.source === "user" ? `Erro com a sua chave: ${msg}` : msg, 502);
   }
 }

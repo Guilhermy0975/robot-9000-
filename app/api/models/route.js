@@ -1,8 +1,25 @@
-import { NextResponse } from "next/server";
-import { listModels } from "@/lib/providers";
+import { ADAPTERS, resolveSource } from "@/lib/providers";
+import { getUserId, json, unauthorized } from "@/lib/auth";
+import { loadUserKeys } from "@/lib/userKeys";
 
 export const dynamic = "force-dynamic";
 
-export function GET() {
-  return NextResponse.json(listModels());
+// Modelos e de onde vem a chave de cada um (nunca envia a chave)
+export async function GET() {
+  const userId = await getUserId();
+  if (!userId) return unauthorized();
+  const keys = await loadUserKeys(userId);
+  return json(
+    ADAPTERS.map((a) => {
+      const r = resolveSource(a, keys[a.id]);
+      return {
+        id: a.id,
+        label: a.label,
+        provider: a.provider,
+        model: r.model ?? a.defaultModel,
+        source: r.source, // "user" | "server" | "simulated"
+        connected: r.source !== "simulated",
+      };
+    })
+  );
 }

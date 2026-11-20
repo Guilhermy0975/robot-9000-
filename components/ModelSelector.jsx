@@ -1,13 +1,15 @@
 "use client";
 import { Columns2 } from "lucide-react";
 
-function StatusDot({ connected }) {
-  return (
-    <span
-      className={`inline-block w-1.5 h-1.5 rounded-full ${connected ? "bg-emerald-400" : "bg-amber-400"}`}
-      title={connected ? "Conectado" : "Simulado (sem chave no servidor)"}
-    />
-  );
+const DOT = {
+  user: ["bg-emerald-400", "Sua chave"],
+  server: ["bg-sky-400", "Grátis do app (limite diário)"],
+  simulated: ["bg-amber-400", "Não conectado: resposta simulada"],
+};
+
+function StatusDot({ source }) {
+  const [cls, title] = DOT[source] ?? DOT.simulated;
+  return <span className={`inline-block w-1.5 h-1.5 rounded-full ${cls}`} title={title} />;
 }
 
 export default function ModelSelector({ models, compare, setCompare, single, setSingle, selected, setSelected }) {
@@ -27,9 +29,9 @@ export default function ModelSelector({ models, compare, setCompare, single, set
             onClick={() => (compare ? toggle(m.id) : setSingle(m.id))}
             className={`shrink-0 flex items-center gap-2 rounded-md px-3.5 py-1.5 text-xs font-display uppercase tracking-wider border transition
               ${on ? "bg-brand text-white border-brand glow" : "bg-card border-line text-muted hover:text-fg hover:border-brand/50"}`}
-            title={`${m.provider} · ${m.connected ? m.model : "resposta simulada"}`}
+            title={`${m.provider} · ${(DOT[m.source] ?? DOT.simulated)[1]}`}
           >
-            <StatusDot connected={m.connected} />
+            <StatusDot source={m.source} />
             {m.label}
           </button>
         );

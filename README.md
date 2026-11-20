@@ -122,3 +122,17 @@ entre dispositivos depois do Módulo 2 (login + banco).
 
 Na Vercel: crie o banco em **Storage → Neon**, conecte ao projeto e faça
 **Redeploy**. O build cria as tabelas sozinho (`prisma db push`).
+
+## Cada pessoa conecta a própria IA
+
+Em **Configurações** (menu ☰), cada usuário cola a chave de API de GPT, Claude,
+Gemini e/ou Llama (Groq), escolhe o modelo, a temperatura, o limite de resposta
+e o prompt de sistema, e pode **testar** a chave.
+
+- As chaves ficam criptografadas (AES-256-GCM) no banco e nunca voltam ao navegador
+- Ordem usada em cada resposta: chave do usuário → chave do app (se o dono
+  configurar na Vercel) → resposta simulada
+- Só a chave do app gasta o limite diário (`DAILY_LIMIT`)
+- Opcional: defina `ENCRYPTION_KEY` na Vercel. Sem ela, a chave de criptografia
+  é derivada da `DATABASE_URL` (se a URL do banco mudar, as pessoas precisarão
+  colar as chaves de novo)

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import {
   Plus, Search, Star, Folder, FolderPlus, MessagesSquare, BookOpen,
   Settings, BarChart3, UserCircle2, X, Trash2, LogOut,
@@ -130,7 +131,11 @@ export default function Sidebar({ open, onClose, store, filter, setFilter, searc
 
         <div className="border-t border-line p-3 space-y-0.5">
           <SocialLinks variant="compact" />
-          <NavItem icon={Settings} label="Configurações" soon />
+          <Link href="/settings"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted hover:text-fg hover:bg-soft/60 transition-colors">
+            <Settings size={17} />
+            <span className="flex-1 text-left">Configurações · Conectar IAs</span>
+          </Link>
           <div className="flex items-center gap-3 px-3 py-2 text-sm">
             <UserCircle2 size={28} className="text-muted" />
             <div className="min-w-0">
