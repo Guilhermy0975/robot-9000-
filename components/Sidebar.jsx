@@ -27,7 +27,7 @@ function NavItem({ icon: Icon, label, active, onClick, soon, count }) {
   );
 }
 
-export default function Sidebar({ open, onClose, store, filter, setFilter, search, setSearch, onNew, account }) {
+export default function Sidebar({ open, onClose, store, filter, setFilter, search, setSearch, onNew, account, onOpenPrompts }) {
   const [newFolder, setNewFolder] = useState(null);
   const { conversations, folders } = store;
 
@@ -78,8 +78,12 @@ export default function Sidebar({ open, onClose, store, filter, setFilter, searc
               active={filter.type === "all"} onClick={() => setFilter({ type: "all" })} />
             <NavItem icon={Star} label="Favoritos" count={favCount}
               active={filter.type === "favorites"} onClick={() => setFilter({ type: "favorites" })} />
-            <NavItem icon={BookOpen} label="Biblioteca de prompts" soon />
-            <NavItem icon={BarChart3} label="Estatísticas" soon />
+            <NavItem icon={BookOpen} label="Biblioteca de prompts" onClick={() => { onOpenPrompts(); if (window.innerWidth < 768) onClose(); }} />
+            <Link href="/usage"
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted hover:text-fg hover:bg-soft/60 transition-colors">
+              <BarChart3 size={17} />
+              <span className="flex-1 text-left">Estatísticas</span>
+            </Link>
           </nav>
 
           <div>

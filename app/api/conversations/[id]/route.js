@@ -18,6 +18,10 @@ function cleanTurns(turns) {
       error: r?.error ? String(r.error).slice(0, 500) : null,
       simulated: !!r?.simulated,
       model: r?.model ? String(r.model).slice(0, 80) : null,
+      tokens: r?.tokens
+        ? { input: Number.isFinite(+r.tokens.input) ? Math.max(0, Math.round(+r.tokens.input)) : null,
+            output: Number.isFinite(+r.tokens.output) ? Math.max(0, Math.round(+r.tokens.output)) : null }
+        : null,
     })),
   }));
 }

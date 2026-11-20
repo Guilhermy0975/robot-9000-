@@ -5,6 +5,7 @@ import TopBar from "@/components/TopBar";
 import ModelSelector from "@/components/ModelSelector";
 import ChatArea from "@/components/ChatArea";
 import ChatInput from "@/components/ChatInput";
+import PromptLibrary from "@/components/PromptLibrary";
 import { useConversations } from "@/hooks/useConversations";
 import { useModels } from "@/hooks/useModels";
 import { useTheme } from "@/hooks/useTheme";
@@ -25,6 +26,7 @@ export default function Home() {
   const [compare, setCompare] = useState(false);
   const [single, setSingle] = useState("gpt");
   const [selected, setSelected] = useState(["gpt", "claude"]);
+  const [promptsOpen, setPromptsOpen] = useState(false);
 
   // Se algum modelo escolhido não estiver disponível, troca pelos disponíveis
   useEffect(() => {
@@ -61,6 +63,9 @@ export default function Home() {
       if (data.quota) account.setQuota(data.quota);
       store.updateResponse(convId, turnId, modelId, {
         status: "done", content: data.content, simulated: !!data.simulated, model: data.model ?? null,
+        tokens: data.usage && (data.usage.input != null || data.usage.output != null)
+          ? { input: data.usage.input ?? null, output: data.usage.output ?? null }
+          : null,
       });
     } catch (e) {
       store.updateResponse(convId, turnId, modelId, {
@@ -114,6 +119,13 @@ export default function Home() {
         setSearch={setSearch}
         onNew={newChat}
         account={account}
+        onOpenPrompts={() => setPromptsOpen(true)}
+      />
+
+      <PromptLibrary
+        open={promptsOpen}
+        onClose={() => setPromptsOpen(false)}
+        onUse={(text) => setMessage((m) => (m.trim() ? m.trimEnd() + "\n\n" + text : text))}
       />
 
       <main className="relative z-10 flex-1 flex flex-col min-w-0">
@@ -156,6 +168,7 @@ export default function Home() {
               onSend={send}
               busy={busy}
               disabledReason={disabledReason}
+              onOpenPrompts={() => setPromptsOpen(true)}
             />
             <p className="text-center text-[10px] uppercase tracking-[0.2em] text-muted mt-2">
               {store.saveError

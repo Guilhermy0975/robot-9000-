@@ -136,3 +136,13 @@ e o prompt de sistema, e pode **testar** a chave.
 - Opcional: defina `ENCRYPTION_KEY` na Vercel. Sem ela, a chave de criptografia
   é derivada da `DATABASE_URL` (se a URL do banco mudar, as pessoas precisarão
   colar as chaves de novo)
+
+## Biblioteca de prompts e estatísticas
+
+- **Biblioteca de prompts** (☰ → Biblioteca de prompts, ou o ícone de livro no
+  campo de mensagem): criar, editar, excluir, favoritar, organizar por
+  categoria, pesquisar e inserir direto no chat. Salva na conta.
+- **Estatísticas** (☰ → Estatísticas): conversas, perguntas, respostas, tokens,
+  consumo por modelo, custo estimado por provedor e gráfico dos últimos 14 dias.
+  Tokens marcados como **real** vêm do provedor; **estimativa** é aproximação.
+  Preços de referência em `lib/pricing.js`.

@@ -17,6 +17,7 @@ model User {
   folders       Folder[]
   usage         Usage[]
   keys          ProviderKey[]
+  prompts       Prompt[]
 }
 
 model Folder {
@@ -67,4 +68,19 @@ model ProviderKey {
   updatedAt   DateTime @updatedAt
 
   @@id([userId, provider])
+}
+
+// Biblioteca de prompts de cada usuário
+model Prompt {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  content   String
+  category  String   @default("Geral")
+  favorite  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, updatedAt])
 }
