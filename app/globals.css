@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+/* Paleta do Robot 9000 — troque aqui para mudar o app inteiro */
+:root {
+  --app-bg: #0d1017;
+  --app-side: #111620;
+  --app-card: #171e2a;
+  --app-soft: #252d3c;
+  --app-brand: #7658d9;
+  --app-fg: #ffffff;
+  --app-muted: #aab2c5;
+  --app-line: rgba(255, 255, 255, 0.08);
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --app-bg: #f5f6fa;
+  --app-side: #ffffff;
+  --app-card: #ffffff;
+  --app-soft: #eceef4;
+  --app-fg: #0d1017;
+  --app-muted: #5b6478;
+  --app-line: rgba(13, 16, 23, 0.1);
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-app: var(--app-bg);
+  --color-side: var(--app-side);
+  --color-card: var(--app-card);
+  --color-soft: var(--app-soft);
+  --color-brand: var(--app-brand);
+  --color-fg: var(--app-fg);
+  --color-muted: var(--app-muted);
+  --color-line: var(--app-line);
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+html, body {
+  background: var(--app-bg);
+  color: var(--app-fg);
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-fade-up { animation: fade-up 0.25s ease-out both; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--app-soft); border-radius: 8px; }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

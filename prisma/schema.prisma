@@ -1,0 +1,66 @@
+// Preparação para o Módulo 2 (PostgreSQL + login).
+// Ainda NÃO é usado: no Módulo 1 os dados ficam no navegador (lib/storage.js).
+// A estrutura espelha o formato salvo localmente para facilitar a migração.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  createdAt     DateTime       @default(now())
+  conversations Conversation[]
+  folders       Folder[]
+}
+
+model Folder {
+  id            String         @id @default(cuid())
+  name          String
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversations Conversation[]
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  title     String
+  favorite  Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folderId  String?
+  folder    Folder?  @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  turns     Turn[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, updatedAt])
+}
+
+model Turn {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  prompt         String
+  responses      Response[]
+  createdAt      DateTime     @default(now())
+}
+
+model Response {
+  id        String  @id @default(cuid())
+  turnId    String
+  turn      Turn    @relation(fields: [turnId], references: [id], onDelete: Cascade)
+  modelId   String
+  model     String?
+  status    String
+  content   String
+  error     String?
+  simulated Boolean @default(false)
+}
