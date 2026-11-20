@@ -16,7 +16,7 @@ export default function ChatInput({ value, onChange, onSend, busy, disabledReaso
   const canSend = value.trim() && !busy && !disabledReason;
 
   return (
-    <div className="bg-card border border-line rounded-2xl p-2 shadow-xl shadow-black/10 focus-within:border-brand/50 transition">
+    <div className="bg-card/90 backdrop-blur border border-line rounded-xl p-2 shadow-xl shadow-black/30 focus-within:border-brand focus-within:glow transition">
       <textarea
         ref={ref}
         value={value}
@@ -44,7 +44,7 @@ export default function ChatInput({ value, onChange, onSend, busy, disabledReaso
           <button
             onClick={onSend}
             disabled={!canSend}
-            className="bg-brand text-white p-2.5 rounded-xl hover:brightness-110 disabled:opacity-40 transition"
+            className="bg-brand text-white p-2.5 rounded-lg glow hover:brightness-110 disabled:opacity-40 transition"
             aria-label="Enviar"
           >
             {busy ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}

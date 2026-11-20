@@ -84,7 +84,7 @@ export default function Home() {
   }
 
   return (
-    <div className="h-dvh flex overflow-hidden bg-app text-fg">
+    <div className="h-dvh flex overflow-hidden bg-poster text-fg">
       <Sidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -106,7 +106,7 @@ export default function Home() {
           onFavorite={() => conv && store.toggleFavorite(conv.id)}
         />
 
-        <div className="px-4 py-2.5 border-b border-line shrink-0">
+        <div className="px-4 py-2.5 border-b border-line shrink-0 bg-app/40 backdrop-blur">
           {modelsError ? (
             <p className="text-sm text-red-400">{modelsError}</p>
           ) : (
@@ -137,10 +137,10 @@ export default function Home() {
               busy={busy}
               disabledReason={disabledReason}
             />
-            <p className="text-center text-[11px] text-muted mt-2">
+            <p className="text-center text-[10px] uppercase tracking-[0.2em] text-muted mt-2">
               {store.saveError
                 ? "Não foi possível salvar no navegador (armazenamento cheio ou bloqueado)."
-                : `${BRAND.name} · histórico salvo neste navegador`}
+                : `${BRAND.name} // histórico salvo neste navegador`}
             </p>
           </div>
         </footer>

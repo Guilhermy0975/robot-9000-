@@ -3,12 +3,12 @@ import { Menu, Moon, Sun, Star } from "lucide-react";
 
 export default function TopBar({ title, onMenu, theme, onToggleTheme, conversation, onFavorite }) {
   return (
-    <header className="pt-[env(safe-area-inset-top)] h-[calc(3.5rem+env(safe-area-inset-top))] border-b border-line flex items-center justify-between px-4 gap-3 shrink-0">
+    <header className="pt-[env(safe-area-inset-top)] h-[calc(3.5rem+env(safe-area-inset-top))] border-b border-line bg-app/40 backdrop-blur flex items-center justify-between px-4 gap-3 shrink-0">
       <div className="flex items-center gap-3 min-w-0">
         <button onClick={onMenu} className="text-muted hover:text-fg p-1" aria-label="Abrir/fechar menu">
           <Menu size={20} />
         </button>
-        <h2 className="font-semibold truncate">{title}</h2>
+        <h2 className="font-display uppercase tracking-wider truncate">{title}</h2>
       </div>
       <div className="flex items-center gap-1 text-muted">
         {conversation && (

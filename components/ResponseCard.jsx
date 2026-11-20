@@ -16,13 +16,13 @@ export default function ResponseCard({ response, info, onRetry }) {
 
   return (
     <div
-      className={`animate-fade-up bg-card border rounded-2xl p-4 md:p-5 flex flex-col min-w-0
-        ${status === "error" ? "border-red-500/40" : "border-line"}`}
+      className={`animate-fade-up bg-card/85 backdrop-blur border rounded-xl p-4 md:p-5 flex flex-col min-w-0
+        ${status === "error" ? "border-red-500/60" : status === "loading" ? "border-brand/50 glow" : "border-line hover:border-brand/40"} transition`}
     >
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="min-w-0">
-          <p className="font-semibold text-brand">{info?.label ?? response.modelId}</p>
-          <p className="text-xs text-muted truncate">
+          <p className="font-display uppercase tracking-wider text-lg leading-none text-brand">{info?.label ?? response.modelId}</p>
+          <p className="text-[11px] uppercase tracking-widest text-muted truncate mt-1">
             {info?.provider ?? "Provedor desconhecido"}{model && !simulated ? ` · ${model}` : ""}
           </p>
         </div>

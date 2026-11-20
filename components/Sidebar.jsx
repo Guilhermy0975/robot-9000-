@@ -42,7 +42,7 @@ export default function Sidebar({ open, onClose, store, filter, setFilter, searc
     <>
       {open && <div onClick={onClose} className="md:hidden fixed inset-0 bg-black/60 z-30 animate-fade-up" />}
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-40 w-72 shrink-0 bg-side border-r border-line flex flex-col
+        className={`fixed md:static inset-y-0 left-0 z-40 w-72 shrink-0 bg-side/95 backdrop-blur scanlines border-r border-line flex flex-col
           transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full md:hidden"}`}
       >
         <div className="p-4 pb-3 pt-[max(1rem,env(safe-area-inset-top))] flex items-center justify-between">
@@ -55,7 +55,7 @@ export default function Sidebar({ open, onClose, store, filter, setFilter, searc
         <div className="px-4 space-y-3">
           <button
             onClick={onNew}
-            className="w-full flex items-center justify-center gap-2 bg-brand hover:brightness-110 text-white rounded-xl py-2.5 font-medium transition"
+            className="w-full flex items-center justify-center gap-2 bg-brand hover:brightness-110 text-white rounded-lg py-2.5 font-display uppercase tracking-widest text-sm glow transition"
           >
             <Plus size={18} /> Nova conversa
           </button>
@@ -65,7 +65,7 @@ export default function Sidebar({ open, onClose, store, filter, setFilter, searc
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar por título..."
-              className="w-full bg-soft/60 rounded-xl py-2 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-brand/60 placeholder:text-muted"
+              className="w-full bg-soft/60 rounded-lg py-2 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-brand/60 placeholder:text-muted"
             />
           </div>
         </div>

@@ -25,8 +25,8 @@ export default function ModelSelector({ models, compare, setCompare, single, set
           <button
             key={m.id}
             onClick={() => (compare ? toggle(m.id) : setSingle(m.id))}
-            className={`shrink-0 flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm border transition
-              ${on ? "bg-brand text-white border-brand" : "bg-card border-line text-muted hover:text-fg"}`}
+            className={`shrink-0 flex items-center gap-2 rounded-md px-3.5 py-1.5 text-xs font-display uppercase tracking-wider border transition
+              ${on ? "bg-brand text-white border-brand glow" : "bg-card border-line text-muted hover:text-fg hover:border-brand/50"}`}
             title={`${m.provider} · ${m.connected ? m.model : "resposta simulada"}`}
           >
             <StatusDot connected={m.connected} />
@@ -37,7 +37,7 @@ export default function ModelSelector({ models, compare, setCompare, single, set
       <span className="w-px h-6 bg-line shrink-0 mx-1" />
       <button
         onClick={() => setCompare(!compare)}
-        className={`shrink-0 flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm border transition
+        className={`shrink-0 flex items-center gap-2 rounded-md px-3.5 py-1.5 text-xs font-display uppercase tracking-wider border transition
           ${compare ? "bg-brand/15 text-brand border-brand/40" : "bg-card border-line text-muted hover:text-fg"}`}
       >
         <Columns2 size={15} /> Comparar{compare ? ` (${selected.length})` : ""}
