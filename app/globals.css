@@ -36,8 +36,8 @@
   --color-fg: var(--app-fg);
   --color-muted: var(--app-muted);
   --color-line: var(--app-line);
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-anton), Impact, "Arial Narrow", sans-serif;
+  --font-sans: var(--font-garamond), Garamond, "Times New Roman", serif;
+  --font-display: var(--font-garamond), Garamond, "Times New Roman", serif;
   --font-logo: var(--font-garamond), Garamond, "Times New Roman", serif;
 }
 
@@ -45,6 +45,9 @@ html, body {
   background: var(--app-bg);
   color: var(--app-fg);
 }
+
+/* A Garamond é mais "miúda" que fontes sem serifa: um pouco maior lê melhor */
+html { font-size: 17px; }
 
 /* Fundo: brilhos vermelhos difusos + textura granulada, como nos pôsteres */
 .bg-poster {

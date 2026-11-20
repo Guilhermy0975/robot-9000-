@@ -1,10 +1,7 @@
 import "./globals.css";
-import { Inter, Anton } from "next/font/google";
 import localFont from "next/font/local";
 import { BRAND } from "@/lib/brand";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-const anton = Anton({ weight: "400", subsets: ["latin"], variable: "--font-anton", display: "swap" });
 // EB Garamond (licença SIL OFL, veja app/fonts/EBGaramond-OFL.txt)
 const garamond = localFont({
   src: [
@@ -35,7 +32,7 @@ const themeScript = `try{var t=localStorage.getItem("robot9000:theme");if(t)docu
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="pt-BR" data-theme="dark" className={`${inter.variable} ${anton.variable} ${garamond.variable}`} suppressHydrationWarning>
+    <html lang="pt-BR" data-theme="dark" className={garamond.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
