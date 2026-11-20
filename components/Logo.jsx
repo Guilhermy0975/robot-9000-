@@ -10,7 +10,7 @@ export default function Logo() {
         height={40}
         className="w-10 h-10 rounded-lg object-cover glow ring-1 ring-brand/60"
       />
-      <span className="font-metal text-2xl leading-none text-brand text-glow animate-flicker">
+      <span className="font-logo italic text-[1.7rem] leading-none tracking-tight text-brand text-glow animate-flicker">
         {BRAND.name}
       </span>
     </div>
