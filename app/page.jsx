@@ -31,11 +31,16 @@ export default function Home() {
   // Se algum modelo escolhido não estiver disponível, troca pelos disponíveis
   useEffect(() => {
     if (!models.length) return;
+    // Começa sempre por uma IA que responde de verdade (chave da pessoa ou grátis do app)
+    const ready = models.filter((m) => m.source !== "simulated").map((m) => m.id);
     const ids = models.map((m) => m.id);
-    if (!ids.includes(single)) setSingle(ids[0]);
+    const pool = ready.length ? ready : ids;
+    if (!pool.includes(single)) setSingle(pool[0]);
     setSelected((old) => {
-      const kept = old.filter((id) => ids.includes(id));
-      return kept.length >= 2 ? kept : ids.slice(0, 2);
+      const kept = old.filter((id) => pool.includes(id));
+      if (kept.length >= 2) return kept;
+      const extra = [...pool, ...ids].filter((id) => !kept.includes(id));
+      return [...kept, ...extra].slice(0, 2);
     });
   }, [models]);
 
