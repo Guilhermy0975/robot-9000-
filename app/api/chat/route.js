@@ -1,10 +1,11 @@
-import { generate, getAdapter, resolveSource } from "@/lib/providers";
+import { generate, getAdapter, keyIdFor, resolveSource } from "@/lib/providers";
 import { rateLimit } from "@/lib/rateLimit";
 import { fail, getUserId, json, unauthorized } from "@/lib/auth";
 import { consume, refund, getUsage } from "@/lib/usage";
 import { loadUserKey } from "@/lib/userKeys";
+import { IMAGE_ID_RE, loadImage, saveImages } from "@/lib/images";
 
-export const maxDuration = 60;
+export const maxDuration = 60; // imagens podem levar uns 20–40 s
 
 const MAX_MESSAGES = 60;
 const MAX_CHARS = 20_000;
@@ -37,7 +38,7 @@ export async function POST(req) {
   if (messages[messages.length - 1].role !== "user" || !messages[messages.length - 1].content.trim())
     return fail("A última mensagem precisa ser do usuário");
 
-  const resolved = resolveSource(adapter, await loadUserKey(userId, adapter.id));
+  const resolved = resolveSource(adapter, await loadUserKey(userId, keyIdFor(adapter)));
   const usesAppKey = resolved.source === "server";
 
   if (usesAppKey && !(await consume(userId))) {
@@ -45,8 +46,15 @@ export async function POST(req) {
   }
 
   try {
-    const result = await generate(adapter, messages.map((m) => ({ role: m.role, content: m.content })), resolved);
-    return json({ ...result, source: resolved.source, quota: await getUsage(userId) });
+    // Modelos de imagem: manda junto a última imagem gerada, para poder editá-la
+    const extra = {};
+    if (adapter.image && resolved.source !== "simulated") {
+      const lastId = [...messages].reverse().flatMap((m) => (Array.isArray(m.images) ? m.images : [])).find((id) => IMAGE_ID_RE.test(String(id)));
+      if (lastId) extra.inputImage = await loadImage(userId, lastId);
+    }
+    const { images, ...result } = await generate(adapter, messages.map((m) => ({ role: m.role, content: m.content })), resolved, extra);
+    const imageIds = images?.length ? await saveImages(userId, images) : [];
+    return json({ ...result, images: imageIds, source: resolved.source, quota: await getUsage(userId) });
   } catch (e) {
     if (usesAppKey) await refund(userId);
     const msg = e instanceof Error ? e.message : "Falha ao gerar resposta";

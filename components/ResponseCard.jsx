@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
-import { Copy, Check, AlertTriangle, RotateCcw, FlaskConical } from "lucide-react";
+import { Copy, Check, AlertTriangle, RotateCcw, FlaskConical, Download, ImageIcon } from "lucide-react";
 
 export default function ResponseCard({ response, info, onRetry }) {
   const [copied, setCopied] = useState(false);
   const { status, content, error, simulated, model } = response;
+  const images = Array.isArray(response.images) ? response.images : [];
 
   async function copy() {
     try {
@@ -32,7 +33,7 @@ export default function ResponseCard({ response, info, onRetry }) {
               <FlaskConical size={12} /> Simulada
             </span>
           )}
-          {status === "done" && (
+          {status === "done" && content && (
             <button onClick={copy} className="p-1.5 text-muted hover:text-fg rounded-lg hover:bg-soft" title="Copiar">
               {copied ? <Check size={15} className="text-emerald-400" /> : <Copy size={15} />}
             </button>
@@ -40,7 +41,14 @@ export default function ResponseCard({ response, info, onRetry }) {
         </div>
       </div>
 
-      {status === "loading" && (
+      {status === "loading" && info?.image && (
+        <div className="aspect-square w-full max-w-md bg-soft rounded-lg animate-pulse flex flex-col items-center justify-center gap-2 text-muted" aria-label="Gerando imagem">
+          <ImageIcon size={28} />
+          <span className="text-xs uppercase tracking-widest">Gerando imagem…</span>
+        </div>
+      )}
+
+      {status === "loading" && !info?.image && (
         <div className="space-y-2.5 py-1" aria-label="Carregando">
           <div className="h-3 bg-soft rounded animate-pulse w-11/12" />
           <div className="h-3 bg-soft rounded animate-pulse w-9/12" />
@@ -48,7 +56,24 @@ export default function ResponseCard({ response, info, onRetry }) {
         </div>
       )}
 
-      {status === "done" && (
+      {status === "done" && images.length > 0 && (
+        <div className="space-y-3 mb-3">
+          {images.map((id) => (
+            <div key={id} className="relative group max-w-md">
+              <a href={`/api/images/${id}`} target="_blank" rel="noopener noreferrer">
+                <img src={`/api/images/${id}`} alt="Imagem gerada" loading="lazy"
+                  className="w-full rounded-lg border border-line bg-soft" />
+              </a>
+              <a href={`/api/images/${id}`} download={`robot9000-${id}.png`} title="Baixar imagem"
+                className="absolute top-2 right-2 p-2 rounded-lg bg-black/60 text-white hover:bg-brand transition">
+                <Download size={16} />
+              </a>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {status === "done" && content && (
         <p className="text-[15px] leading-7 whitespace-pre-wrap break-words">{content}</p>
       )}
 

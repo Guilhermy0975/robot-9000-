@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { fail, getUserId, json, unauthorized } from "@/lib/auth";
+import { IMAGE_ID_RE, deleteImagesOf } from "@/lib/images";
 
 const MAX_BYTES = 1_000_000;
 const ID_RE = /^[\w-]{6,64}$/;
@@ -18,6 +19,7 @@ function cleanTurns(turns) {
       error: r?.error ? String(r.error).slice(0, 500) : null,
       simulated: !!r?.simulated,
       model: r?.model ? String(r.model).slice(0, 80) : null,
+      images: (Array.isArray(r?.images) ? r.images : []).filter((x) => IMAGE_ID_RE.test(String(x))).slice(0, 4),
       tokens: r?.tokens
         ? { input: Number.isFinite(+r.tokens.input) ? Math.max(0, Math.round(+r.tokens.input)) : null,
             output: Number.isFinite(+r.tokens.output) ? Math.max(0, Math.round(+r.tokens.output)) : null }
@@ -68,6 +70,8 @@ export async function DELETE(_req, { params }) {
   const userId = await getUserId();
   if (!userId) return unauthorized();
   const { id } = await params;
+  const conv = await db.conversation.findFirst({ where: { id, userId }, select: { turns: true } });
+  if (conv) await deleteImagesOf(userId, conv.turns);
   await db.conversation.deleteMany({ where: { id, userId } });
   return json({ ok: true });
 }

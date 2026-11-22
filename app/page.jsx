@@ -55,7 +55,7 @@ export default function Home() {
 
   // Chama UM modelo; cada chamada atualiza só o próprio cartão
   const runModel = useCallback(async (convId, turnId, modelId, history) => {
-    store.updateResponse(convId, turnId, modelId, { status: "loading", error: null, content: "" });
+    store.updateResponse(convId, turnId, modelId, { status: "loading", error: null, content: "", images: [] });
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -68,6 +68,7 @@ export default function Home() {
       if (data.quota) account.setQuota(data.quota);
       store.updateResponse(convId, turnId, modelId, {
         status: "done", content: data.content, simulated: !!data.simulated, model: data.model ?? null,
+        images: Array.isArray(data.images) ? data.images : [],
         tokens: data.usage && (data.usage.input != null || data.usage.output != null)
           ? { input: data.usage.input ?? null, output: data.usage.output ?? null }
           : null,

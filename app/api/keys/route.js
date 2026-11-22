@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { fail, getUserId, json, unauthorized } from "@/lib/auth";
 import { encrypt, hintOf } from "@/lib/crypto";
-import { ADAPTERS, DEFAULT_SETTINGS, getAdapter, serverKeyFor } from "@/lib/providers";
+import { KEY_ADAPTERS, DEFAULT_SETTINGS, getAdapter, serverKeyFor } from "@/lib/providers";
 import { rateLimit } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +12,7 @@ export async function GET() {
   if (!userId) return unauthorized();
   const rows = await db.providerKey.findMany({ where: { userId } });
   return json(
-    ADAPTERS.map((a) => {
+    KEY_ADAPTERS.map((a) => {
       const r = rows.find((x) => x.provider === a.id);
       return {
         id: a.id,
@@ -40,7 +40,7 @@ export async function PUT(req) {
 
   const b = await req.json().catch(() => null);
   const adapter = getAdapter(b?.provider);
-  if (!adapter) return fail("Provedor inválido");
+  if (!adapter || adapter.keyFrom) return fail("Provedor inválido");
 
   const apiKey = typeof b.apiKey === "string" ? b.apiKey.trim() : "";
   if (apiKey && (apiKey.length < 10 || apiKey.length > 300 || /\s/.test(apiKey))) return fail("Chave em formato inválido");

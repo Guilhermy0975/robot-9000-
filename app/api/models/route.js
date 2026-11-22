@@ -1,4 +1,4 @@
-import { ADAPTERS, resolveSource } from "@/lib/providers";
+import { ADAPTERS, keyIdFor, resolveSource } from "@/lib/providers";
 import { getUserId, json, unauthorized } from "@/lib/auth";
 import { loadUserKeys } from "@/lib/userKeys";
 
@@ -11,7 +11,7 @@ export async function GET() {
   const keys = await loadUserKeys(userId);
   return json(
     ADAPTERS.map((a) => {
-      const r = resolveSource(a, keys[a.id]);
+      const r = resolveSource(a, keys[keyIdFor(a)]);
       return {
         id: a.id,
         label: a.label,
@@ -19,6 +19,7 @@ export async function GET() {
         model: r.model ?? a.defaultModel,
         source: r.source, // "user" | "server" | "simulated"
         connected: r.source !== "simulated",
+        image: !!a.image,
       };
     })
   );

@@ -18,6 +18,7 @@ model User {
   usage         Usage[]
   keys          ProviderKey[]
   prompts       Prompt[]
+  images        GeneratedImage[]
 }
 
 model Folder {
@@ -58,7 +59,7 @@ model Usage {
 model ProviderKey {
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  provider    String // "gpt" | "claude" | "gemini" | "llama"
+  provider    String // "gpt" | "claude" | "gemini" | "llama" (o Nano Banana usa a do "gemini")
   keyEnc      String
   keyHint     String
   model       String   @default("")
@@ -83,4 +84,16 @@ model Prompt {
   updatedAt DateTime @updatedAt
 
   @@index([userId, updatedAt])
+}
+
+// Imagens geradas (Nano Banana). A conversa guarda só o id; os bytes ficam aqui.
+model GeneratedImage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mime      String
+  data      Bytes
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
