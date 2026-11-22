@@ -13,7 +13,7 @@ export async function POST(req) {
 
   const b = await req.json().catch(() => null);
   const adapter = getAdapter(b?.provider);
-  if (!adapter) return fail("Provedor inválido");
+  if (!adapter || adapter.keyFrom) return fail("Provedor inválido");
 
   const userKey = await loadUserKey(userId, adapter.id);
   if (!userKey) return fail("Salve uma chave antes de testar");

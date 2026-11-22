@@ -146,3 +146,16 @@ e o prompt de sistema, e pode **testar** a chave.
   consumo por modelo, custo estimado por provedor e gráfico dos últimos 14 dias.
   Tokens marcados como **real** vêm do provedor; **estimativa** é aproximação.
   Preços de referência em `lib/pricing.js`.
+
+## Nano Banana (imagens)
+
+A aba **Nano Banana** gera imagens com o modelo de imagem do Gemini.
+
+- Usa a **mesma chave do Gemini**: quem conectou o Gemini em Configurações já pode usar
+- Para editar, é só pedir na conversa (ex.: "deixa o fundo vermelho"): a última imagem
+  gerada vai junto para o modelo
+- As imagens ficam na tabela `GeneratedImage` do banco e são entregues por
+  `/api/images/[id]` (só para o dono). Excluir a conversa apaga as imagens dela
+- Modelo padrão: `gemini-3.1-flash-image`. Troque com `NANO_BANANA_MODEL`
+- Atenção: imagem custa bem mais que texto, e cada uma ocupa de centenas de KB a
+  alguns MB no banco (o plano grátis do Neon tem 0,5 GB)
